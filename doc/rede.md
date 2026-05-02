@@ -1,12 +1,10 @@
 # rede.py — Camada de Comunicação entre Nós
 
-**Pessoa 1 · Trabalho Prático — Computação Distribuída · PUC Minas**
-
 ---
 
 ## O que é este módulo
 
-`rede.py` é a camada de comunicação do sistema distribuído de ACO (Algoritmo de Colônia de Formigas). Ele isola toda a complexidade de sockets TCP, threads e serialização JSON em uma única classe — `Rede` — cujas funções públicas são chamadas pelos demais módulos (`aco.py`, `coordenacao.py`, `no.py`) sem que eles precisem saber nada sobre rede.
+`rede.py` é a camada de comunicação do sistema distribuído de ACO (Algoritmo de Colônia de Formigas). Ele isola toda a complexidade de sockets TCP, threads e serialização JSON em uma única classe - `Rede` - cujas funções públicas são chamadas pelos demais módulos (`aco.py`, `coordenacao.py`, `no.py`) sem que eles precisem saber nada sobre rede.
 
 ---
 
@@ -77,7 +75,7 @@ Rede(meu_id: int, minha_porta: int, nos_conhecidos: dict)
 
 #### `iniciar_servidor() → None`
 
-Sobe o servidor TCP em uma thread daemon em background. Retorna imediatamente — o servidor roda em paralelo com o restante do programa.
+Sobe o servidor TCP em uma thread daemon em background. Retorna imediatamente - o servidor roda em paralelo com o restante do programa.
 
 Deve ser chamado **uma única vez**, logo após instanciar a classe.
 
@@ -95,8 +93,8 @@ rede.iniciar_servidor()
 Envia uma mensagem JSON para o nó de destino via TCP.
 
 - Retorna `True` se o envio foi bem-sucedido.
-- Retorna `False` se o nó estiver offline ou ocorrer qualquer erro de rede — **sem lançar exceção**.
-- Timeout de conexão: **3 segundos**.
+- Retorna `False` se o nó estiver offline ou ocorrer qualquer erro de rede - sem lançar exceção.
+- Timeout de conexão: 3 segundos.
 
 ```python
 mensagem = {
@@ -112,7 +110,7 @@ if not sucesso:
     print("Nó 2 está offline — iniciar eleição?")
 ```
 
-> **Detalhe de implementação:** abre e fecha uma conexão TCP a cada envio. Isso é mais simples e robusto do que manter conexões persistentes para um sistema com poucos nós.
+> **Detalhe de implementação:** abre e fecha uma conexão TCP a cada envio.
 
 ---
 
@@ -129,14 +127,13 @@ mensagem = {
 }
 
 rede.broadcast(mensagem)
-# Envia para todos os nós exceto o nó 3 (si mesmo)
 ```
 
 ---
 
 #### `receber_proxima() → dict | None`
 
-Retorna a próxima mensagem da fila interna (ordem FIFO), ou `None` se não houver mensagens. **Não bloqueia** — retorna imediatamente.
+Retorna a próxima mensagem da fila interna (ordem FIFO), ou `None` se não houver mensagens. **Não bloqueia** - retorna imediatamente.
 
 Deve ser chamada em loop no programa principal (`no.py`):
 
@@ -153,21 +150,11 @@ while True:
 
 #### `parar() → None`
 
-Encerra o servidor TCP e libera a porta. Usado principalmente nos testes para limpar recursos entre cenários.
+Encerra o servidor TCP e libera a porta.
 
 ```python
 rede.parar()
 ```
-
----
-
-## Constantes internas
-
-| Constante | Valor | Descrição |
-|---|---|---|
-| `DELIMITADOR` | `b"\n"` | Marcador de fim de mensagem no stream TCP |
-| `TIMEOUT_CONEXAO` | `3` | Segundos antes de desistir de conectar a um nó |
-| `BUFFER_SIZE` | `4096` | Tamanho do chunk de leitura em bytes |
 
 ---
 
@@ -185,12 +172,12 @@ rede.parar()
   └──────────────────────────────────────────────┘   
                           ▲                          
   Thread daemon (servidor)│                          
-  ┌───────────────────────┴──────────────────────┐   
+  ┌───────────────────────┴───────────────────────┐   
   │  _loop_servidor()                             │  
   │    └── accept() ──► _tratar_conexao() (thread)│  
   │                          └── json.loads()     │  
   │                          └── queue.put()      │  
-  └──────────────────────────────────────────────┘   
+  └───────────────────────────────────────────────┘   
 
 ```
 
@@ -212,7 +199,7 @@ rede.parar()
 
 ## Como testar
 
-### Teste automático (recomendado — roda tudo num processo só)
+### Teste automático
 
 ```bash
 python teste_rede.py auto
@@ -222,10 +209,10 @@ Executa 4 cenários e imprime OK em cada um:
 
 | Teste | O que verifica |
 |---|---|
-| 1 — Envio direto | Nó 2 envia para Nó 1; Nó 1 recebe corretamente |
-| 2 — Broadcast | Nó 1 faz broadcast; Nós 2 e 3 recebem; Nó 1 não recebe a si mesmo |
-| 3 — Nó offline | `enviar_mensagem()` retorna `False` sem travar quando destino está fora |
-| 4 — Múltiplas mensagens | 5 mensagens enviadas em sequência chegam todas |
+| 1 - Envio direto | Nó 2 envia para Nó 1; Nó 1 recebe corretamente |
+| 2 - Broadcast | Nó 1 faz broadcast; Nós 2 e 3 recebem; Nó 1 não recebe a si mesmo |
+| 3 - Nó offline | `enviar_mensagem()` retorna `False` sem travar quando destino está fora |
+| 4 - Múltiplas mensagens | 5 mensagens enviadas em sequência chegam todas |
 
 ### Teste com terminais reais
 
@@ -245,8 +232,7 @@ O Terminal 1 imprime cada mensagem recebida em tempo real.
 
 ## Limitações conhecidas
 
-- **Ordem de chegada:** como cada mensagem usa uma conexão TCP separada, mensagens enviadas em rápida sucessão podem chegar fora de ordem. O Relógio de Lamport (módulo `coordenacao.py`) é responsável por resolver a ordenação lógica das atualizações de feromônio.
-- **Sem reconexão automática:** se um nó cair e voltar, o sistema simplesmente tentará reconectar na próxima mensagem. Não há lógica de retry contínuo.
+- **Ordem de chegada:** como cada mensagem usa uma conexão TCP separada, mensagens podem chegar fora de ordem. O Relógio de Lamport (módulo `coordenacao.py`) é responsável por resolver a ordenação lógica das atualizações de feromônio.
 - **Comunicação local:** o mapeamento padrão usa `localhost`. Para usar em máquinas diferentes, basta alterar os IPs no dicionário `nos_conhecidos` em `no.py`.
 
 ---
