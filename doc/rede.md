@@ -1,16 +1,12 @@
 # rede.py — Camada de Comunicação entre Nós
 
----
-
 ## O que é este módulo
 
 `rede.py` é a camada de comunicação do sistema distribuído de ACO (Algoritmo de Colônia de Formigas). Ele isola toda a complexidade de sockets TCP, threads e serialização JSON em uma única classe - `Rede` - cujas funções públicas são chamadas pelos demais módulos (`aco.py`, `coordenacao.py`, `no.py`) sem que eles precisem saber nada sobre rede.
 
----
-
 ## Dependências
 
-Apenas biblioteca padrão do Python — **nenhuma instalação necessária**.
+Apenas biblioteca padrão do Python - nenhuma instalação necessária.
 
 | Módulo | Uso |
 |---|---|
@@ -20,7 +16,6 @@ Apenas biblioteca padrão do Python — **nenhuma instalação necessária**.
 | `queue` | Fila thread-safe para mensagens recebidas |
 | `time` | Pausa de inicialização do servidor |
 
----
 
 ## Formato padrão de mensagem
 
@@ -52,7 +47,6 @@ Toda mensagem trocada entre nós segue este formato JSON:
 | `SOLICITACAO` | Líder | `{}` |
 | `FEROMONIO` | Worker ou Líder | `{"matriz": [[...], ...], "num_iteracoes": 10}` |
 
----
 
 ## Classe `Rede`
 
@@ -69,15 +63,13 @@ Rede(meu_id: int, minha_porta: int, nos_conhecidos: dict)
 | `nos_conhecidos` | `dict` | `{1: ('localhost', 5001), 2: ('localhost', 5002)}` | Mapa de todos os nós do sistema |
 
 
----
-
 ### Métodos públicos
 
 #### `iniciar_servidor() → None`
 
 Sobe o servidor TCP em uma thread daemon em background. Retorna imediatamente - o servidor roda em paralelo com o restante do programa.
 
-Deve ser chamado **uma única vez**, logo após instanciar a classe.
+Deve ser chamado uma única vez, logo após instanciar a classe.
 
 ```python
 rede.iniciar_servidor()
@@ -86,7 +78,6 @@ rede.iniciar_servidor()
 
 > **Detalhe de implementação:** o servidor usa `SO_REUSEADDR` para evitar o erro `Address already in use` ao reiniciar o processo rapidamente. O `accept()` tem timeout de 1 segundo para verificar periodicamente se o servidor deve parar.
 
----
 
 #### `enviar_mensagem(destino_id: int, mensagem: dict) → bool`
 
@@ -112,11 +103,10 @@ if not sucesso:
 
 > **Detalhe de implementação:** abre e fecha uma conexão TCP a cada envio.
 
----
 
 #### `broadcast(mensagem: dict) → None`
 
-Envia a mensagem para **todos os nós conhecidos, exceto este próprio**. Continua mesmo que alguns nós estejam offline.
+Envia a mensagem para todos os nós conhecidos, exceto este próprio. Continua mesmo que alguns nós estejam offline.
 
 ```python
 mensagem = {
@@ -129,11 +119,9 @@ mensagem = {
 rede.broadcast(mensagem)
 ```
 
----
-
 #### `receber_proxima() → dict | None`
 
-Retorna a próxima mensagem da fila interna (ordem FIFO), ou `None` se não houver mensagens. **Não bloqueia** - retorna imediatamente.
+Retorna a próxima mensagem da fila interna (ordem FIFO), ou `None` se não houver mensagens. Não bloqueia - retorna imediatamente.
 
 Deve ser chamada em loop no programa principal (`no.py`):
 
@@ -146,8 +134,6 @@ while True:
     time.sleep(0.01)
 ```
 
----
-
 #### `parar() → None`
 
 Encerra o servidor TCP e libera a porta.
@@ -155,8 +141,6 @@ Encerra o servidor TCP e libera a porta.
 ```python
 rede.parar()
 ```
-
----
 
 ## Arquitetura interna
 
@@ -195,8 +179,6 @@ rede.parar()
 2. Abre uma conexão TCP com `socket.connect()`, chama `sendall()` e fecha.
 3. Todo esse bloco está dentro de `try/except` — falhas retornam `False` silenciosamente.
 
----
-
 ## Como testar
 
 ### Teste automático
@@ -228,12 +210,7 @@ python teste_rede.py cliente 2 1
 
 O Terminal 1 imprime cada mensagem recebida em tempo real.
 
----
-
 ## Limitações conhecidas
 
 - **Ordem de chegada:** como cada mensagem usa uma conexão TCP separada, mensagens podem chegar fora de ordem. O Relógio de Lamport (módulo `coordenacao.py`) é responsável por resolver a ordenação lógica das atualizações de feromônio.
 - **Comunicação local:** o mapeamento padrão usa `localhost`. Para usar em máquinas diferentes, basta alterar os IPs no dicionário `nos_conhecidos` em `no.py`.
-
----
-
