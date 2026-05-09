@@ -148,3 +148,23 @@ class Rede:
 
         except OSError as e:
             print(f"[Rede] Erro ao ler conexão de {endereco}: {e}")
+
+    def tentar_enviar_mensagem(self, destino_id: int, mensagem: dict) -> bool:
+        if destino_id not in self.nos_conhecidos:
+            return False
+
+        host, porta = self.nos_conhecidos[destino_id]
+
+        try:
+            with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+                s.settimeout(TIMEOUT_CONEXAO)
+                s.connect((host, porta))
+
+                dados = json.dumps(mensagem, ensure_ascii=False).encode("utf-8")
+                dados += DELIMITADOR
+                s.sendall(dados)
+
+            return True
+
+        except (ConnectionRefusedError, TimeoutError, OSError):
+            return False

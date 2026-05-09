@@ -212,3 +212,35 @@ class ACO:
 
         if quantidade_linhas < 2:
             raise ValueError(f"{nome} deve possuir pelo menos duas cidades.")
+
+    def exportar_estado(self) -> dict:
+        rota, distancia = self.obter_melhor_global()
+
+        return {
+            "matriz": self.obter_feromonio(),
+            "melhor_rota": rota,
+            "melhor_distancia": distancia,
+        }
+
+    @staticmethod
+    def consolidar_matrizes(matrizes: list[list[list[float]]]) -> list[list[float]]:
+        if not matrizes:
+            raise ValueError("A lista de matrizes não pode ser vazia.")
+
+        tamanho = len(matrizes[0])
+
+        for matriz in matrizes:
+            if len(matriz) != tamanho:
+                raise ValueError("Todas as matrizes devem ter o mesmo tamanho.")
+
+            for linha in matriz:
+                if len(linha) != tamanho:
+                    raise ValueError("Todas as matrizes devem ser quadradas e ter o mesmo tamanho.")
+
+        return [
+            [
+                sum(matriz[i][j] for matriz in matrizes) / len(matrizes)
+                for j in range(tamanho)
+            ]
+            for i in range(tamanho)
+        ]

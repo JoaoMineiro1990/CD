@@ -156,3 +156,36 @@ class EleicaoLider:
             self.lider_atual = None
             self._recebeu_ok = False
             self._momento_eleicao = None
+            
+class MembrosGrupo:
+
+    def __init__(self, meu_id: int):
+        self.meu_id = meu_id
+        self._participantes = {meu_id}
+        self._lock = threading.Lock()
+
+    def adicionar(self, no_id: int) -> None:
+        with self._lock:
+            self._participantes.add(no_id)
+
+    def adicionar_varios(self, ids: list[int]) -> None:
+        with self._lock:
+            self._participantes.update(ids)
+            self._participantes.add(self.meu_id)
+
+    def remover(self, no_id: int) -> None:
+        with self._lock:
+            if no_id != self.meu_id:
+                self._participantes.discard(no_id)
+
+    def listar(self) -> list[int]:
+        with self._lock:
+            return sorted(self._participantes)
+
+    def workers(self) -> list[int]:
+        with self._lock:
+            return sorted(
+                no_id
+                for no_id in self._participantes
+                if no_id != self.meu_id
+            )
