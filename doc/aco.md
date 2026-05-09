@@ -511,13 +511,3 @@ Uma iteração do ACO acontece assim:
 Resumo:
 
 `executar_iteracao() -> _construir_rota() -> _escolher_proxima_cidade() -> _calcular_distancia_rota() -> _atualizar_feromonio() -> _evaporar_feromonio() -> _depositar_feromonio()`
-
-## Limitações conhecidas
-
-- O algoritmo é heurístico, então não garante encontrar a rota ótima.
-- Os parâmetros `alfa`, `beta`, `rho` e `q` não foram calibrados exaustivamente.
-- A média de feromônio externo pode diluir bons caminhos encontrados localmente.
-- A matriz de feromônio pode crescer bastante se o depósito superar a evaporação por muitas iterações.
-- A distância usada pela instância é euclidiana, não distância real por estrada.
-- A melhor rota da iteração pode piorar entre iterações, embora a melhor global seja preservada.
-- A execução local é rápida porque o algoritmo testa apenas uma amostra de rotas, não todas as combinações possíveis.

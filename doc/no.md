@@ -1,4 +1,4 @@
-# no.py — Programa Principal do Nó Distribuído
+# Programa Principal do Nó Distribuído(no.py)
 
 ## O que é este arquivo
 
