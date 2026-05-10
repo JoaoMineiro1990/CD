@@ -1,4 +1,4 @@
-# rede.py — Camada de Comunicação entre Nós
+# Camada de Comunicação entre Nós (rede.py)
 
 ## O que é este módulo
 
@@ -207,10 +207,3 @@ python teste_rede.py servidor 1
 # Terminal 2
 python teste_rede.py cliente 2 1
 ```
-
-O Terminal 1 imprime cada mensagem recebida em tempo real.
-
-## Limitações conhecidas
-
-- **Ordem de chegada:** como cada mensagem usa uma conexão TCP separada, mensagens podem chegar fora de ordem. O Relógio de Lamport (módulo `coordenacao.py`) é responsável por resolver a ordenação lógica das atualizações de feromônio.
-- **Comunicação local:** o mapeamento padrão usa `localhost`. Para usar em máquinas diferentes, basta alterar os IPs no dicionário `nos_conhecidos` em `no.py`.

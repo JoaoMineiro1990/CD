@@ -1,4 +1,4 @@
-# coordenacao.py — Relógio de Lamport e Eleição de Líder
+# Relógio de Lamport e Eleição de Líder (coordenacao.py)
 
 ## O que é este módulo
 
@@ -261,8 +261,3 @@ Inicia 3 nós com o Nó 3 como líder. Derruba o Nó 3 e aguarda o Nó 2 ser ele
 | Queda do Nó 3 | Nós 1 e 2 detectam falha via heartbeat e elegem Nó 2 |
 | Queda do Nó 2 | Nó 1 detecta falha, inicia eleição, se declara líder por timeout |
 
-## Limitações conhecidas
-
-- **Eleições simultâneas:** se dois nós detectam a falha do líder ao mesmo tempo e iniciam eleições em paralelo, ambos enviam ELEICAO entre si. O protocolo converge corretamente — o nó maior vence — mas pode gerar mensagens redundantes na rede.
-- **Nó maior ID sempre vence:** o algoritmo Bully não considera carga ou capacidade dos nós, apenas o ID. Em cenários reais isso pode ser indesejável, mas é adequado para o escopo didático deste trabalho.
-- **Estado em memória:** todo o estado de eleição (`lider_atual`, `_em_eleicao`, etc.) é volátil. Se um nó reiniciar durante uma eleição, ele começa sem saber quem é o líder e precisará participar de uma nova eleição ou receber um heartbeat com a informação.
