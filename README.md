@@ -40,6 +40,7 @@ cd C:\Users\joao_\Desktop\computacaodist
 $env:PYTHONUTF8='1'
 python src\no.py 1
 ```
+Observação: recomenda-se iniciar as máquinas de forma sequencial, aguardando a primeira completar sua inicialização antes de subir as demais. Se todas forem iniciadas ao mesmo tempo, os nós podem não se reconhecer durante a descoberta inicial, fazendo com que cada um crie sua própria fila de execução. Após um grupo já estar ativo, novas máquinas tendem a ingressar na fila existente.
 
 Terminal 2:
 
