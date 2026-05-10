@@ -346,19 +346,3 @@ Matriz simétrica significa que:
 `DISTANCIAS[0][1] == DISTANCIAS[1][0]`
 
 Ou seja, a distância da `Cidade 1` para a `Cidade 2` é a mesma da `Cidade 2` para a `Cidade 1`.
-
-## Resumo para o grupo
-
-Para usar a instância padrão, basta fazer:
-
-`from instancia import obter_matriz_distancias`
-
-`matriz = obter_matriz_distancias()`
-
-Essa matriz já está pronta para ser usada pelo algoritmo ACO.
-
-Para imprimir uma rota com nomes:
-
-`from instancia import formatar_rota`
-
-`print(formatar_rota(rota))`
