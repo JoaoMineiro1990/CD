@@ -113,6 +113,16 @@ O que observar nos terminais sobreviventes:
 
 Pode-se derrubar o novo lider (no 4) em seguida para ver a cadeia 4 -> 3 -> 2 -> 1.
 
+### Como rodar o front (alternativa para o terminal)
+
+Abra o terminal e digite o comando:
+
+```powershell
+python src/interface.py
+```
+
+Clique na aba "Sistema ao vivo" e explore a combinação de nós.
+
 ## Modo benchmark
 
 Para parar apos 100 iteracoes (usado nos experimentos comparativos):
